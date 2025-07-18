@@ -1,15 +1,16 @@
 from fastapi import FastAPI, Depends, HTTPException
 from fastapi.security import OAuth2PasswordRequestForm
-from .database import Base, engine, SessionLocal
-from .models import AdminUser
-from .auth import hash_password, authenticate_user, create_token
-from .routes import contact, newsletter, blog, comment
+from app.database import Base, engine, SessionLocal
+from app.models import AdminUser
+from app.auth import hash_password, authenticate_user, create_token
+from app.routes import contact, newsletter, blog, comment
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI(title="Youpi. Backend")
 
 Base.metadata.create_all(bind=engine)
 
+# Routes
 app.include_router(contact.router)
 app.include_router(newsletter.router)
 app.include_router(blog.router)
@@ -37,9 +38,10 @@ def login(form_data: OAuth2PasswordRequestForm = Depends(), db=Depends(SessionLo
 def home():
     return {"msg": "Welcome to Youpi. API!"}
 
+# CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # À restreindre à ton domaine frontend en production
+    allow_origins=["*"],  # À restreindre à ton domaine en prod
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
