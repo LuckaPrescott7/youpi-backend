@@ -4,6 +4,7 @@ from .database import Base, engine, SessionLocal
 from .models import AdminUser
 from .auth import hash_password, authenticate_user, create_token
 from .routes import contact, newsletter, blog, comment
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI(title="Youpi. Backend")
 
@@ -35,3 +36,11 @@ def login(form_data: OAuth2PasswordRequestForm = Depends(), db=Depends(SessionLo
 @app.get("/")
 def home():
     return {"msg": "Welcome to Youpi. API!"}
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # À restreindre à ton domaine frontend en production
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
